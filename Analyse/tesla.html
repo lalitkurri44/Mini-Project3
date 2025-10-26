@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic Charts by Year</title>
+<!-- <link rel="stylesheet" href="style.css"> -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  body { font-family: Arial, sans-serif; margin:20px; }
+  .year { padding:8px 12px; margin:5px; cursor:pointer; border:1px solid #007BFF; border-radius:5px; background:#fff; color:#007BFF; }
+  .year.active { background:#007BFF; color:#fff; }
+  .charts-container { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px,1fr)); gap:20px; margin-top:20px; }
+  .chart-box { background:#fff; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+</style>
+</head>
+<body>
+  
+
+   <h1 style="
+    text-align: center; 
+    margin: 30px 0; 
+    font-size: 2.5rem; 
+    font-weight: bold; 
+    color: #007BFF; 
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.2); 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+">
+    TESLA COMPANY ANALYSE
+</h1>
+
+<h2>Select Year:</h2>
+<div id="yearButtons">
+  <button class="year active" data-year="2014">2014</button>
+  <button class="year" data-year="2015">2015</button>
+  <button class="year" data-year="2016">2016</button>
+  <button class="year" data-year="2017">2017</button>
+  <button class="year" data-year="2018">2018</button>
+  <button class="year" data-year="2019">2019</button>
+  <button class="year" data-year="2020">2020</button>
+  <button class="year" data-year="2021">2021</button>
+  <button class="year" data-year="2022">2022</button>
+  <button class="year" data-year="2023">2023</button>
+  <button class="year" data-year="2024">2024</button>
+</div>
+
+<h3>Stats</h3>
+<p>Total Sales: <span id="totalSales"></span></p>
+<p>Total Margin: <span id="totalMargin"></span></p>
+<p>Avg Margin: <span id="avgMargin"></span></p>
+<p>New Customers: <span id="newCustomers"></span></p>
+<p>Repeat Customers: <span id="repeatCustomers"></span></p>
+
+<div class="charts-container">
+  <div class="chart-box">
+    <canvas id="salesTrend"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="customerSource"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="salesCity"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="salesService"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="deptMargin"></canvas>
+  </div>
+  <div class="chart-box">
+    <canvas id="newRepeat"></canvas>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const years = [2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024];
+
+    // Dummy chart data per year (replace with real data)
+    const chartDataByYear = {};
+    years.forEach(year => {
+        chartDataByYear[year] = {
+            salesTrend: Array.from({length:11}, () => Math.floor(Math.random()*200000 + 50000)),
+            customerSource: [Math.floor(Math.random()*50),Math.floor(Math.random()*30),Math.floor(Math.random()*20),Math.floor(Math.random()*10)],
+            salesCity: Array.from({length:5}, () => Math.floor(Math.random()*50000+10000)),
+            salesService: Array.from({length:4}, () => Math.floor(Math.random()*50)),
+            deptMargin: Array.from({length:5}, () => Math.floor(Math.random()*20000+5000)),
+            newRepeat: [Math.floor(Math.random()*150), Math.floor(Math.random()*150)]
+        };
+    });
+
+    const dataByYear = {
+        2014:{totalSales:"1,794,875",totalMargin:"549,028",avgMargin:"30.50%",newCustomers:"92",repeatCustomers:"148"},
+        2015:{totalSales:"2,010,450",totalMargin:"612,340",avgMargin:"30.45%",newCustomers:"110",repeatCustomers:"160"},
+        2016:{totalSales:"2,345,670",totalMargin:"690,520",avgMargin:"29.45%",newCustomers:"135",repeatCustomers:"175"},
+        2017:{totalSales:"2,789,230",totalMargin:"830,200",avgMargin:"29.75%",newCustomers:"150",repeatCustomers:"190"},
+        2018:{totalSales:"3,120,000",totalMargin:"960,000",avgMargin:"30.77%",newCustomers:"170",repeatCustomers:"210"},
+        2019:{totalSales:"3,540,900",totalMargin:"1,080,700",avgMargin:"30.52%",newCustomers:"185",repeatCustomers:"225"},
+        2020:{totalSales:"3,000,000",totalMargin:"890,000",avgMargin:"29.67%",newCustomers:"160",repeatCustomers:"210"},
+        2021:{totalSales:"3,600,000",totalMargin:"1,020,000",avgMargin:"28.33%",newCustomers:"190",repeatCustomers:"230"},
+        2022:{totalSales:"4,100,000",totalMargin:"1,230,000",avgMargin:"30.00%",newCustomers:"210",repeatCustomers:"250"},
+        2023:{totalSales:"4,700,000",totalMargin:"1,410,000",avgMargin:"30.00%",newCustomers:"230",repeatCustomers:"270"},
+        2024:{totalSales:"5,200,000",totalMargin:"1,650,000",avgMargin:"31.73%",newCustomers:"260",repeatCustomers:"290"}
+    };
+
+    // Initialize charts
+    const salesTrend = new Chart(document.getElementById('salesTrend').getContext('2d'), {
+        type:'line', data:{labels:years,datasets:[{label:'Sales ($)',data:chartDataByYear[2014].salesTrend,borderColor:'#4f46e5',backgroundColor:'rgba(79,70,229,0.2)',tension:0.3}]},
+        options:{responsive:true,plugins:{legend:{display:false}}}
+    });
+
+    const customerSource = new Chart(document.getElementById('customerSource').getContext('2d'), {
+        type:'doughnut', data:{labels:['Organic','Referral','Paid Ads','Social Media'], datasets:[{data:chartDataByYear[2014].customerSource, backgroundColor:['#4f46e5','#6366f1','#a78bfa','#c4b5fd']}]},
+        options:{responsive:true}
+    });
+
+    const salesCity = new Chart(document.getElementById('salesCity').getContext('2d'), {
+        type:'bar', data:{labels:['New York','Los Angeles','Chicago','Houston','Phoenix'], datasets:[{label:'Sales ($)', data:chartDataByYear[2014].salesCity, backgroundColor:'#4f46e5'}]},
+        options:{responsive:true,plugins:{legend:{display:false}}}
+    });
+
+    const salesService = new Chart(document.getElementById('salesService').getContext('2d'), {
+        type:'pie', data:{labels:['Consulting','Software','Hardware','Support'], datasets:[{data:chartDataByYear[2014].salesService, backgroundColor:['#4f46e5','#818cf8','#a5b4fc','#c7d2fe']}]},
+        options:{responsive:true}
+    });
+
+    const deptMargin = new Chart(document.getElementById('deptMargin').getContext('2d'), {
+        type:'bar', data:{labels:['Sales','Marketing','HR','Finance','IT'], datasets:[{label:'Margin ($)', data:chartDataByYear[2014].deptMargin, backgroundColor:'#4f46e5'}]},
+        options:{responsive:true,plugins:{legend:{display:false}}}
+    });
+
+    const newRepeat = new Chart(document.getElementById('newRepeat').getContext('2d'), {
+        type:'doughnut', data:{labels:['New','Repeat'], datasets:[{data:chartDataByYear[2014].newRepeat, backgroundColor:['#4f46e5','#818cf8']}]},
+        options:{responsive:true}
+    });
+
+    // Function to update all charts
+    function updateCharts(year){
+        salesTrend.data.datasets[0].data = chartDataByYear[year].salesTrend;
+        salesTrend.update();
+
+        customerSource.data.datasets[0].data = chartDataByYear[year].customerSource;
+        customerSource.update();
+
+        salesCity.data.datasets[0].data = chartDataByYear[year].salesCity;
+        salesCity.update();
+
+        salesService.data.datasets[0].data = chartDataByYear[year].salesService;
+        salesService.update();
+
+        deptMargin.data.datasets[0].data = chartDataByYear[year].deptMargin;
+        deptMargin.update();
+
+        newRepeat.data.datasets[0].data = chartDataByYear[year].newRepeat;
+        newRepeat.update();
+    }
+
+    // Update stats & charts when year clicked
+    document.querySelectorAll(".year").forEach(button=>{
+        button.addEventListener("click", function(){
+            document.querySelectorAll(".year").forEach(btn=>btn.classList.remove("active"));
+            this.classList.add("active");
+
+            const year = this.getAttribute("data-year");
+            const stats = dataByYear[year];
+
+            document.getElementById("totalSales").textContent = stats.totalSales;
+            document.getElementById("totalMargin").textContent = stats.totalMargin;
+            document.getElementById("avgMargin").textContent = stats.avgMargin;
+            document.getElementById("newCustomers").textContent = stats.newCustomers;
+            document.getElementById("repeatCustomers").textContent = stats.repeatCustomers;
+
+            updateCharts(year);
+        });
+    });
+
+    // Initialize stats for 2014
+    const initStats = dataByYear['2014'];
+    document.getElementById("totalSales").textContent = initStats.totalSales;
+    document.getElementById("totalMargin").textContent = initStats.totalMargin;
+    document.getElementById("avgMargin").textContent = initStats.avgMargin;
+    document.getElementById("newCustomers").textContent = initStats.newCustomers;
+    document.getElementById("repeatCustomers").textContent = initStats.repeatCustomers;
+});
+</script>

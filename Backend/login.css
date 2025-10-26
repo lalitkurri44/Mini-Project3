@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #6a80fe, #7b5cf8);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Card */
+.container {
+    background: #fff;
+    width: 400px;
+    padding: 45px 35px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+/* Gradient circular logo */
+.logo {
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, #6a80fe, #7b5cf8);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+}
+
+.arrow {
+    font-size: 28px;
+    color: white;
+    transform: rotate(0deg);
+}
+
+/* Header text */
+.container h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 6px;
+}
+
+.container p {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 14.5px;
+}
+
+/* Inputs */
+.input-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s;
+    font-size: 15px;
+}
+
+.input-group input:focus {
+    border-color: #6a80fe;
+}
+
+/* Remember & Forgot */
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2px;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.options label {
+    color: #555;
+}
+
+.options a {
+    color: #6a80fe;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.options a:hover {
+    text-decoration: underline;
+}
+
+/* Sign-in button */
+button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(90deg, #6a80fe, #7b5cf8);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #7b5cf8, #6a80fe);
+}
+
+/* Footer */
+.footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+.footer a {
+    color: #6a80fe;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}

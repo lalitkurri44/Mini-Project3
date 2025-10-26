@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Voice Assistant</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  #response {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0f4f8;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    font-size: 18px;
+  }
+</style>
+<script>
+async function startAssistant() {
+    // Send request to backend
+    let response = await fetch("/start-assistant", { method: "POST" });
+    let data = await response.text();
+
+    // Show text nicely in div
+    const respDiv = document.getElementById("response");
+    respDiv.innerText = data;
+
+    // Browser speech
+    const utterance = new SpeechSynthesisUtterance(data);
+    speechSynthesis.speak(utterance);
+}
+</script>
+</head>
+<body class="flex flex-col items-center justify-center h-screen bg-gray-100">
+  <button onclick="startAssistant()" 
+          class="px-6 py-3 bg-blue-500 text-white rounded-xl shadow-lg hover:bg-blue-600 transition">
+    🎤 Start Voice Assistant
+  </button>
+  
+  <div id="response">Your assistant response will appear here</div>
+</body>
+</html>
