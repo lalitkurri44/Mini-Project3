@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chatbot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f6fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .dashboard {
+  cursor: pointer;
+}
+
+    .chat-container {
+      width: 400px;
+      height: 600px;
+      max-width: 90%;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .chat-header {
+      background: #6c5ce7;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    .chat-body {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
+    }
+    .message.user {
+      align-items: flex-end;
+    }
+    .message.bot {
+      align-items: flex-start;
+    }
+    .message .text {
+      max-width: 80%;
+      padding: 10px 15px;
+      border-radius: 15px;
+      background: #dfe6e9;
+      word-wrap: break-word;
+    }
+    .message.user .text {
+      background: #6c5ce7;
+      color: white;
+    }
+    .chat-footer {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+    .chat-footer input {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+    }
+    .chat-footer button {
+      background: #6c5ce7;
+      color: white;
+      border: none;
+      padding: 0 20px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">AI Stock Chatbot</div>
+    <div class="chat-body" id="chat-body"></div>
+    <div class="chat-footer">
+      <input type="text" id="user-input" placeholder="Type a message...">
+      <button id="send-btn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatBody = document.getElementById('chat-body');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    // Optional: keep history for context
+    let history = [{ role: "system", content: "You are a helpful stock assistant." }];
+
+    function addMessage(text, sender) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message', sender);
+      const textDiv = document.createElement('div');
+      textDiv.classList.add('text');
+      textDiv.innerText = text;
+      messageDiv.appendChild(textDiv);
+      chatBody.appendChild(messageDiv);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return messageDiv;
+    }
+
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      addMessage(message, 'user');
+      userInput.value = '';
+
+      const typingEl = addMessage('Bot is typing...', 'bot');
+
+      history.push({ role: "user", content: message });
+
+      try {
+        const response = await fetch('http://localhost:4000/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: message, history })
+        });
+
+        const data = await response.json();
+        typingEl.remove();
+
+        if (data.error) {
+          addMessage("Error: " + data.error, 'bot');
+        } else {
+          const reply = data.reply || "No reply from AI";
+          addMessage(reply, 'bot');
+          history.push({ role: "assistant", content: reply });
+        }
+      } catch (error) {
+        typingEl.remove();
+        addMessage("⚠️ Network error. Make sure the backend is running.", 'bot');
+        console.error(error);
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>
