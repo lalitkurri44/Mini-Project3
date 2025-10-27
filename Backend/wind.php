@@ -1,5 +1,4 @@
 <?php 
-// connection.php include optional if you want to store wallet transactions
 include('connection.php');
 ?>
 

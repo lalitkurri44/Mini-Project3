@@ -48,7 +48,7 @@ if(mysqli_num_rows($result) > 0){
     <script>
 document.querySelector('form').addEventListener('submit', function() {
     var amt = document.querySelector('input[name="amount"]').value;
-    document.getElementById('returnURL').value = "http://localhost/Stock/new/wallet_success.php?amount=" + amt;
+    document.getElementById('returnURL').value = "http://localhost/Stocks/new/wallet_success.php?amount=" + amt;
 });
 </script>
 
